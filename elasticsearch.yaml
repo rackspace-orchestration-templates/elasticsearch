@@ -1,0 +1,122 @@
+heat_template_version: 2013-05-23
+
+description: |
+  This is a Heat template to deploy an elasticsearch cluster on the
+  Rackspace Cloud.
+
+
+parameters:
+
+  flavor:
+    description: Rackspace Cloud Server flavor
+    type: string
+    default: 2 GB Performance
+    constraints:
+    - allowed_values:
+      - 2 GB Performance
+      - 4 GB Performance
+      - 8 GB Performance
+      - 15 GB Performance
+      - 30 GB Performance
+      - 512MB Standard Instance
+      - 1GB Standard Instance
+      - 2GB Standard Instance
+      - 4GB Standard Instance
+      - 8GB Standard Instance
+      - 15GB Standard Instance
+      - 30GB Standard Instance
+      description: |
+        Must be a valid Rackspace Cloud Server flavor for the region you have
+        selected to deploy into.
+
+  load_balancer_hostname:
+    description: Hostname for load balancer
+    type: string
+    default: es-lb
+
+  server_hostname:
+    description: Hostname for the servers
+    type: string
+    default: es
+
+  ssh_keypair_name:
+    description: Nova keypair name for ssh access to the servers
+    type: string
+    default: elasticsearch
+
+  es_node_count:
+    description: Number of nodes to create
+    type: number
+    default: 2
+
+  es_auth_user:
+    description: User name for HTTP basic authentication on Elasticsearch endpoint
+    type: string
+    default: es_user
+
+
+resources:
+
+  ssh_key:
+    type: "OS::Nova::KeyPair"
+    properties:
+      name: { get_param: ssh_keypair_name }
+      save_private_key: true
+
+  load_balancer:
+      type: "Rackspace::Cloud::LoadBalancer"
+      depends_on:
+        - es_nodes
+      properties:
+        name: { get_param: load_balancer_hostname }
+        nodes:
+        - addresses: { get_attr: [es_nodes, es_private_ip] }
+          port: 8080
+          condition: ENABLED
+        port: 8080
+        protocol: HTTP
+        algorithm: ROUND_ROBIN
+        contentCaching: DISABLED
+        virtualIps:
+        - type: PUBLIC
+          ipVersion: IPV4
+
+  es_network:
+    type: Rackspace::Cloud::Network
+    properties:
+      label: es_network
+      cidr: 192.168.0.0/24
+
+  es_password:
+    type: OS::Heat::RandomString
+    properties:
+      length: 32
+      sequence: lettersdigits
+
+  es_nodes:
+    type: "OS::Heat::ResourceGroup"
+    properties:
+      count: { get_param: es_node_count }
+      resource_def:
+        type: http://drop.duncancreek.net/elasticsearch_node.yaml
+        properties:
+          server_flavor:    { get_param: flavor }
+          server_hostname:  { get_param: server_hostname }
+          ssh_keypair_name: { get_param: ssh_keypair_name }
+          ssh_private_key:  { get_attr: [ssh_key, private_key] }
+          es_network_id:    { get_resource: es_network }
+          es_password:      { get_attr: [es_password, value] }
+          es_auth_user:     { get_param: es_auth_user }
+
+
+outputs:
+  private_key:
+    value: { get_attr: [ssh_key, private_key] }
+  es_auth_user:
+    value: { get_param: es_auth_user }
+  es_password:
+    value: { get_attr: [es_password, value] }
+  load_balancer_ip:
+    value: { get_attr: [load_balancer, PublicIp] }
+  es_server_ips:
+    value: { get_attr: [es_nodes, es_server_ip] }

@@ -1,0 +1,101 @@
+heat_template_version: 2013-05-23
+
+description: |
+  This is a Heat template to deploy a single Linux server running elasticsearch.
+
+parameters:
+
+  server_flavor:
+    description: Flavor for Cloud Servers
+    type: string
+    default: 2 GB Performance
+
+  server_hostname:
+    description: Hostname for the server.
+    type: string
+    default: es
+
+  ssh_keypair_name:
+    description: Nova keypair name for ssh access to the server
+    type: string
+    default: jgbes
+
+  es_network_id:
+    description: cloud network id for intra-cluster communication
+    type: string
+
+  ssh_private_key:
+    description: private key to access the created servers
+    type: string
+
+  es_password:
+    description: password for HTTP basic auth
+    type: string
+
+  es_auth_user:
+    description: User name for HTTP basic authentication to Elasticsearch endpoint
+    type: string
+    default: es_user
+
+resources:
+
+  es_server:
+    type: "Rackspace::Cloud::Server"
+    properties:
+      name: es
+      flavor: { get_param: server_flavor }
+      image: Ubuntu 12.04 LTS (Precise Pangolin)
+      key_name: { get_param: ssh_keypair_name }
+      networks:
+      - uuid: "00000000-0000-0000-0000-000000000000"
+      - uuid: "11111111-1111-1111-1111-111111111111"
+      - uuid: { get_param: es_network_id }
+
+  es_pre_setup:
+    type: "OS::Heat::ChefSolo"
+    depends_on: es_server
+    properties:
+      username: root
+      private_key: { get_param: ssh_private_key }
+      host: { get_attr: [es_server, accessIPv4] }
+      Berksfile: |
+        site :opscode
+        cookbook 'apt'
+        cookbook 'build-essential'
+      node:
+        run_list: [ "recipe[apt]",
+                    "recipe[build-essential]"]
+
+  es_setup:
+    type: "OS::Heat::ChefSolo"
+    depends_on: es_pre_setup
+    properties:
+      username: root
+      private_key: { get_param: ssh_private_key }
+      host: { get_attr: [es_server, accessIPv4] }
+      Berksfile: |
+        site :opscode
+        cookbook 'java'
+        cookbook 'firewall'
+        cookbook 'rax-elasticsearch',
+          :git => 'https://github.com/JasonBoyles/cookbook-rax-elasticsearch.git'
+      data_bags:
+        elasticsearch:
+          id: users
+          _default:
+            users:
+              - username: { get_param: es_auth_user }
+                password: { get_param: es_password }
+      node:
+        elasticsearch:
+          cluster:
+            name: heated_cluster
+        run_list: ["recipe[rax-elasticsearch]"]
+
+
+outputs:
+
+  es_server_ip:
+    value: { get_attr: [es_server, accessIPv4] }
+  es_private_ip:
+    value: { get_attr: [es_server, privateIPv4] }
