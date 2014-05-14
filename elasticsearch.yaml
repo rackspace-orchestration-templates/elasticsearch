@@ -98,7 +98,7 @@ resources:
     properties:
       count: { get_param: es_node_count }
       resource_def:
-        type: http://drop.duncancreek.net/elasticsearch_node.yaml
+        type: https://raw.githubusercontent.com/rackspace-orchestration-templates/elasticsearch/master/elasticsearch_node.yaml
         properties:
           server_flavor:    { get_param: flavor }
           server_hostname:  { get_param: server_hostname }
