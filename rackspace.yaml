@@ -4,6 +4,7 @@ application-name: Elasticsearch
 application-version: 0.90.12
 flavor: Multiple Linux servers running an Elasticsearch cluster
 flavor-weight: 1
+abstract: A cluster of [Elasticsearch](http://www.elasticsearch.org/) nodes.
 reach-info:
   tattoo: https://0b5294b243620310a700-e388a7f3aba385a925111b1fc6f680d4.ssl.cf2.rackcdn.com/elasticsearch-tattoo.png
   icon-20x20: https://0b5294b243620310a700-e388a7f3aba385a925111b1fc6f680d4.ssl.cf2.rackcdn.com/elasticsearch-icon-20x20.png
