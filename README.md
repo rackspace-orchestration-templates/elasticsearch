@@ -52,8 +52,6 @@ the `-P` flag to specify a custom parameter.
 * `load_balancer_hostname`: Sets the name of the load balancer. (Default: es-lb)
 * `server_hostname`: Configures the hostname for the Elasticsearch nodes (Default: es)
 * `flavor`: Cloud server flavor to use. (Default: 2 GB Performance)
-* `ssh_keypair_name`: Name of the SSH key pair to register with nova (Default:
-  elasticsearch)
 * `es_auth_user`: userid for HTTP basic authentication when connecting to the
   Elasticsearch service. This will also apply to connections made via the
   load balancer. (Default: es_user)
