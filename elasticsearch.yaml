@@ -19,6 +19,7 @@ parameter_groups:
 parameters:
 
   flavor:
+    label: Server Size
     description: Rackspace Cloud Server flavor
     type: string
     default: 2 GB Performance
@@ -41,21 +42,25 @@ parameters:
         selected to deploy into.
 
   load_balancer_hostname:
+    label: Load Balancer Name
     description: Hostname for load balancer
     type: string
     default: es-lb
 
   server_hostname:
+    label: Server Name
     description: Hostname for the servers
     type: string
     default: es
 
   es_node_count:
+    label: Nodes
     description: Number of nodes to create
     type: number
     default: 2
 
   es_auth_user:
+    label: Username
     description: User name for HTTP basic authentication on Elasticsearch endpoint
     type: string
     default: es_user
