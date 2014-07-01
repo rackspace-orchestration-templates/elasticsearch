@@ -62,14 +62,16 @@ parameters:
     default: es%index%
 
   es_node_count:
-    label: Nodes
-    description: Number of nodes to create
+    label: Number of Servers
+    description: Number of Elasticsearch nodes to create
     type: number
     default: 2
 
   es_auth_user:
     label: Username
-    description: User name for HTTP basic authentication on Elasticsearch endpoint
+    description: |
+      User name for authentication with the Elasticsearch endpoint. A password
+      will be automatically generated.
     type: string
     default: es_user
 
