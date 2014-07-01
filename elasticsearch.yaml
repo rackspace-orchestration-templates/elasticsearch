@@ -8,7 +8,6 @@ parameter_groups:
 
 - label: Server Settings
   parameters:
-  - server_hostname
   - flavor
   - es_node_count
 
@@ -16,11 +15,21 @@ parameter_groups:
   parameters:
   - es_auth_user
 
+- label: rax-dev-params
+  parameters:
+  - load_balancer_hostname
+  - server_hostname
+  - child_template
+  - kitchen
+  - chef_version
+
 parameters:
 
   flavor:
     label: Server Size
-    description: Rackspace Cloud Server flavor
+    description: |
+      Rackspace Cloud Server flavor to use. The size is based on the amount of
+      RAM for the provisioned server.
     type: string
     default: 2 GB Performance
     constraints:
@@ -45,25 +54,44 @@ parameters:
     label: Load Balancer Name
     description: Hostname for load balancer
     type: string
-    default: es-lb
+    default: elasticsearch-lb
 
   server_hostname:
     label: Server Name
     description: Hostname for the servers
     type: string
-    default: es
+    default: elasticsearch-%index%
 
   es_node_count:
-    label: Nodes
-    description: Number of nodes to create
+    label: Number of Servers
+    description: Number of Elasticsearch nodes to create
     type: number
     default: 2
 
   es_auth_user:
     label: Username
-    description: User name for HTTP basic authentication on Elasticsearch endpoint
+    description: |
+      User name for authentication with the Elasticsearch endpoint. A password
+      will be automatically generated.
     type: string
     default: es_user
+
+  child_template:
+    label: Child Template
+    type: string
+    default: https://raw.githubusercontent.com/rackspace-orchestration-templates/elasticsearch/master/elasticsearch_node.yaml
+
+  kitchen:
+    label: Kitchen
+    description: URL for the kitchen to use
+    type: string
+    default: https://github.com/rackspace-orchestration-templates/elasticsearch
+
+  chef_version:
+    label: Chef Version
+    description: Version of chef client to use
+    type: string
+    default: 11.12.8
 
 resources:
 
@@ -95,7 +123,7 @@ resources:
     type: Rackspace::Cloud::Network
     properties:
       label: es_network
-      cidr: 192.168.0.0/24
+      cidr: 192.168.134.0/24
 
   es_password:
     type: OS::Heat::RandomString
@@ -108,20 +136,22 @@ resources:
     properties:
       count: { get_param: es_node_count }
       resource_def:
-        type: https://raw.githubusercontent.com/rackspace-orchestration-templates/elasticsearch/master/elasticsearch_node.yaml
+        type: { get_param: child_template }
         properties:
-          server_flavor:    { get_param: flavor }
+          flavor:           { get_param: flavor }
           server_hostname:  { get_param: server_hostname }
           ssh_keypair_name: { get_resource: ssh_key }
           ssh_private_key:  { get_attr: [ssh_key, private_key] }
           es_network_id:    { get_resource: es_network }
           es_password:      { get_attr: [es_password, value] }
           es_auth_user:     { get_param: es_auth_user }
+          kitchen:          { get_param: kitchen }
+          chef_version:     { get_param: chef_version }
 
 outputs:
   private_key:
     value: { get_attr: [ssh_key, private_key] }
-    description: "Private Key"
+    description: "SSH Private Key"
 
   es_auth_user:
     value: { get_param: es_auth_user }
@@ -138,3 +168,11 @@ outputs:
   es_server_ips:
     value: { get_attr: [es_nodes, es_server_ip] }
     description: "Elasticsearch Server IPs"
+
+  es_url:
+    description: Elasticsearch URL
+    value:
+      str_replace:
+        template: "http://%server_ip%:8080"
+        params:
+          "%server_ip%": { get_attr: [load_balancer, PublicIp] }
