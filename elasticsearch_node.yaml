@@ -19,7 +19,7 @@ parameters:
   server_hostname:
     description: Hostname for the server.
     type: string
-    default: es%index%
+    default: elasticsearch-%index%
 
   ssh_keypair_name:
     description: Nova keypair name for ssh access to the server
@@ -60,7 +60,7 @@ resources:
   es_server:
     type: "Rackspace::Cloud::Server"
     properties:
-      name: es
+      name: { get_param: server_hostname }
       flavor: { get_param: flavor }
       image: { get_param: image }
       key_name: { get_param: ssh_keypair_name }
