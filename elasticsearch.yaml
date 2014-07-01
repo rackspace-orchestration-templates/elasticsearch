@@ -167,3 +167,11 @@ outputs:
   es_server_ips:
     value: { get_attr: [es_nodes, es_server_ip] }
     description: "Elasticsearch Server IPs"
+
+  es_url:
+    description: Elasticsearch URL
+    value:
+      str_replace:
+        template: "http://%server_ip%:8080"
+        params:
+          "%server_ip%": { get_attr: [load_balancer, PublicIp] }
