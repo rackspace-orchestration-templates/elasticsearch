@@ -135,7 +135,7 @@ resources:
       resource_def:
         type: { get_param: child_template }
         properties:
-          server_flavor:    { get_param: flavor }
+          flavor:           { get_param: flavor }
           server_hostname:  { get_param: server_hostname }
           ssh_keypair_name: { get_resource: ssh_key }
           ssh_private_key:  { get_attr: [ssh_key, private_key] }
