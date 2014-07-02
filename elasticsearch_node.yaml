@@ -43,6 +43,10 @@ parameters:
     type: string
     default: es_user
 
+  stack_id:
+    description: Stack ID
+    type: string
+
   kitchen:
     label: Kitchen
     description: URL for the kitchen to use
@@ -64,6 +68,8 @@ resources:
       flavor: { get_param: flavor }
       image: { get_param: image }
       key_name: { get_param: ssh_keypair_name }
+      metadata:
+        rax-heat: { get_param: "stack_id" }
       networks:
       - uuid: "00000000-0000-0000-0000-000000000000"
       - uuid: "11111111-1111-1111-1111-111111111111"

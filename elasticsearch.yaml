@@ -138,6 +138,7 @@ resources:
       resource_def:
         type: { get_param: child_template }
         properties:
+          stack_id:         { get_param: "OS::stack_id" }
           flavor:           { get_param: flavor }
           server_hostname:  { get_param: server_hostname }
           ssh_keypair_name: { get_resource: ssh_key }
