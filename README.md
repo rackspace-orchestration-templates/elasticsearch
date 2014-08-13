@@ -2,15 +2,21 @@ Description
 ===========
 
 This is a template to deploy an [Elasticsearch](http://www.elasticsearch.org/)
-cluster with [OpenStackHeat](https://wiki.openstack.org/wiki/Heat) on the [Rackspace
-Cloud](http://www.rackspace.com/cloud/). This template uses
+cluster with [OpenStackHeat](https://wiki.openstack.org/wiki/Heat) on the
+[Rackspace Cloud](http://www.rackspace.com/cloud/). This template uses
 [chef-solo](http://docs.opscode.com/chef_solo.html) to configure the servers.
 
 Requirements
 ============
-* A Heat provider that supports the Rackspace `OS::Heat::ChefSolo` plugin.
+* A Heat provider that supports the following:
+  * OS::Nova::KeyPair
+  * OS::Heat::RandomString
+  * Rackspace::Cloud::Network
+  * Rackspace::Cloud::LoadBalancer
+  * OS::Heat::ResourceGroup
 * An OpenStack username, password, and tenant id.
-* [python-heatclient](https://github.com/openstack/python-heatclient) `>= v0.2.8`:
+* [python-heatclient](https://github.com/openstack/python-heatclient)
+`>= v0.2.8`:
 
 ```bash
 pip install python-heatclient
@@ -49,20 +55,29 @@ Parameters
 Parameters can be replaced with your own values when standing up a stack. Use
 the `-P` flag to specify a custom parameter.
 
-* `load_balancer_hostname`: Sets the name of the load balancer. (Default: es-lb)
-* `server_hostname`: Configures the hostname for the Elasticsearch nodes (Default: es)
-* `flavor`: Cloud server flavor to use. (Default: 2 GB Performance)
-* `es_auth_user`: userid for HTTP basic authentication when connecting to the
-  Elasticsearch service. This will also apply to connections made via the
-  load balancer. (Default: es_user)
+* `server_hostname`: Hostname for the servers (Default: elasticsearch-%index%)
+* `load_balancer_hostname`: Hostname for load balancer (Default:
+  elasticsearch-lb)
+* `es_node_count`: Number of Elasticsearch nodes to create (Default: 2)
+* `child_template`: (Default:
+  https://raw.githubusercontent.com/rackspace-orchestration-templates/elasticsearch/master/elasticsearch_node.yaml)
+* `es_auth_user`: User name for authentication with the Elasticsearch endpoint.
+  A password will be automatically generated. (Default: es_user)
+* `flavor`: Rackspace Cloud Server flavor to use. The size is based on the
+  amount of RAM for the provisioned server. (Default: 2 GB Performance)
+* `chef_version`: Version of chef client to use (Default: 11.12.8)
+* `kitchen`: URL for the kitchen to use (Default:
+  https://github.com/rackspace-orchestration-templates/elasticsearch)
 
 Outputs
 =======
 Once a stack comes online, use `heat output-list` to see all available outputs.
 Use `heat output-show <OUTPUT NAME>` to get the value fo a specific output.
 
+* `es_url`: Elasticsearch URL
 * `es_server_ips`: Public IP addresses for the Elasticsearch nodes created.
-* `private_key`: SSH private key that can be used to login as root to the servers.
+* `private_key`: SSH private key that can be used to login as root to the
+  servers.
 * `es_auth_user`: userid for HTTP basic auth
 * `es_password`: generated password for HTTP basic auth
 * `load_balancer_ip`: Public IP address of the cloud load balancer
