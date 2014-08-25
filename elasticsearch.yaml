@@ -102,22 +102,27 @@ resources:
       save_private_key: true
 
   load_balancer:
-      type: "Rackspace::Cloud::LoadBalancer"
-      depends_on:
-        - es_nodes
-      properties:
-        name: { get_param: load_balancer_hostname }
-        nodes:
-        - addresses: { get_attr: [es_nodes, es_private_ip] }
-          port: 8080
-          condition: ENABLED
+    type: "Rackspace::Cloud::LoadBalancer"
+    depends_on:
+      - es_nodes
+    properties:
+      name: { get_param: load_balancer_hostname }
+      nodes:
+      - addresses: { get_attr: [es_nodes, es_private_ip] }
         port: 8080
-        protocol: HTTP
-        algorithm: ROUND_ROBIN
-        contentCaching: DISABLED
-        virtualIps:
-        - type: PUBLIC
-          ipVersion: IPV4
+        condition: ENABLED
+      healthMonitor:
+        type: CONNECT
+        delay: 10
+        timeout: 5
+        attemptsBeforeDeactivation: 1
+      port: 8080
+      protocol: HTTP
+      algorithm: ROUND_ROBIN
+      contentCaching: DISABLED
+      virtualIps:
+      - type: PUBLIC
+        ipVersion: IPV4
 
   es_network:
     type: Rackspace::Cloud::Network
