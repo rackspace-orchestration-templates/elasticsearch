@@ -78,6 +78,8 @@ parameters:
 
   child_template:
     label: Child Template
+    description: |
+      URL to the Child template that will provision Elasticsearch nodes.
     type: string
     default: https://raw.githubusercontent.com/rackspace-orchestration-templates/elasticsearch/master/elasticsearch_node.yaml
 
