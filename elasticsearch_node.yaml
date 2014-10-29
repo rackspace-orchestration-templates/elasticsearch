@@ -14,7 +14,7 @@ parameters:
   flavor:
     description: Flavor for Cloud Servers
     type: string
-    default: 2 GB Performance
+    default: 2 GB General Purpose v1
 
   server_hostname:
     description: Hostname for the server.
