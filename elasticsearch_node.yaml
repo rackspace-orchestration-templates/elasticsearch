@@ -24,7 +24,6 @@ parameters:
   ssh_keypair_name:
     description: Nova keypair name for ssh access to the server
     type: string
-    default: elasticsearch
 
   es_network_id:
     description: cloud network id for intra-cluster communication
