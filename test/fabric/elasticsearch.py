@@ -1,6 +1,7 @@
 from fabric.api import env, run, task
 from envassert import detect, file, group, package, port, process, service, \
     user
+from hot.utils.test import get_artifacts
 
 
 @task
@@ -20,3 +21,9 @@ def check():
     assert process.is_up("nginx")
     assert service.is_enabled("nginx")
     assert service.is_enabled("elasticsearch")
+
+
+@task
+def artifacts():
+    env.platform_family = detect.detect()
+    get_artifacts()
