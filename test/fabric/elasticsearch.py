@@ -1,7 +1,23 @@
-from fabric.api import env, task
+import json
+
+from fabric.api import env, task, run
 from envassert import detect, file, group, package, port, process, service, \
     user
 from hot.utils.test import get_artifacts
+
+
+def es_cluster_green():
+    try:
+        health_json = run(
+            "curl -XGET 'http://localhost:9200/_cluster/health?pretty=true'")
+        cluster_health = json.loads(health_json)
+    except:
+        return False
+
+    if cluster_health.get("status") == "green":
+        return True
+    else:
+        return False
 
 
 @task
@@ -21,6 +37,7 @@ def check():
     assert process.is_up("nginx")
     assert service.is_enabled("nginx")
     assert service.is_enabled("elasticsearch")
+    assert es_cluster_green(), "Cluster status did not return 'green'"
 
 
 @task

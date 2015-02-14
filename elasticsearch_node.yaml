@@ -42,6 +42,11 @@ parameters:
     type: string
     default: es_user
 
+  es_version:
+    description: Version of Elasticsearch to deploy
+    type: string
+    default: "1.4.3"
+
   stack_id:
     description: Stack ID
     type: string
@@ -92,6 +97,7 @@ resources:
                 password: { get_param: es_password }
       node:
         elasticsearch:
+          version: { get_param: es_version }
           cluster:
             name: heated_cluster
         run_list: ["recipe[apt]",
