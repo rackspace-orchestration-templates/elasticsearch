@@ -1,7 +1,7 @@
 schema-version: 1.0.0
 application-family: Miscellaneous
 application-name: Elasticsearch
-application-version: 0.90.12
+application-version: 1.4.3
 flavor: Multiple Linux servers
 flavor-weight: 1
 reach-info:
