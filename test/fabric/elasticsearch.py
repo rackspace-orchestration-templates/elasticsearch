@@ -3,6 +3,7 @@ import os
 import re
 import yaml
 
+from colorama import Fore, Style, init, deinit
 from fabric.api import env, task, run
 from envassert import detect, file, group, package, port, process, service, \
     user
@@ -17,6 +18,7 @@ def es_cluster_green():
             "curl -XGET 'http://localhost:9200/_cluster/health?pretty=true'")
         cluster_health = json.loads(health_json)
     except:
+        print "cluster health query failed to execute."
         return False
 
     if cluster_health.get("status") == "green":
@@ -43,6 +45,7 @@ def latest_template_es_version():
 
 
 def check_for_newer_es_release():
+    init()
     most_recent_version_supported = latest_template_es_version()
     g = GitHub(token=os.environ.get('GITHUB_TOKEN'))
     repo = g.repository('elasticsearch', 'elasticsearch')
@@ -51,12 +54,16 @@ def check_for_newer_es_release():
     for tag in tags:
         if tag.startswith('v') and not re.search('[Bb]eta', tag):
             assert version >= parse_version(tag), \
-                ('It would seem there is a newer version of '
+                (Fore.RED + Style.BRIGHT + \
+                 '\nIt would seem there is a newer version of '
                  'elasticsearch available: {}-- update the template '
-                 'to support it!').format(tag)
+                 'to support it!\n' + Fore.RESET + Style.RESET_ALL).format(tag)
 
-    print "Looks like {} is the most".format(most_recent_version_supported), \
-          "recent version of es. The template supports that, so we're good!"
+    print Fore.GREEN + Style.BRIGHT +                                        \
+        "Looks like {} is the most".format(most_recent_version_supported),   \
+        "recent version of es. The template supports that, so we're good!" + \
+        "\n" + Fore.RESET + Style.RESET_ALL
+    deinit()
 
 
 @task
