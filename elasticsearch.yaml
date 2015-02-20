@@ -82,7 +82,7 @@ parameters:
     description: |
       Version of Elasticsearch to install.
     type: string
-    default: "1.4.3"
+    default: 1.4.4
     constraints:
     - allowed_values:
       - 0.90.13
@@ -90,7 +90,7 @@ parameters:
       - 1.1.2
       - 1.2.3
       - 1.3.8
-      - 1.4.3
+      - 1.4.4
 
   child_template:
     label: Child Template
