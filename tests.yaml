@@ -23,11 +23,11 @@ test-cases:
             use_ssh_config: True
             fabfile: test/fabric/elasticsearch.py # Path to envassert test
 
-- name: Standard Instance, non-standard user
+- name: Standard Instance, test 1.3.x
   create:
     parameters:
       flavor: 2GB Standard Instance
-      es_auth_user: racker
+      es_version: 1.3.9
     timeout: 30
   resource_tests:
     ssh_private_key: { get_output: private_key }
