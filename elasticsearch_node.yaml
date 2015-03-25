@@ -66,7 +66,7 @@ parameters:
 resources:
 
   es_server:
-    type: "Rackspace::Cloud::Server"
+    type: "OS::Nova::Server"
     properties:
       name: { get_param: server_hostname }
       flavor: { get_param: flavor }
@@ -109,4 +109,4 @@ outputs:
     value: { get_attr: [es_server, accessIPv4] }
 
   es_private_ip:
-    value: { get_attr: [es_server, privateIPv4] }
+    value: { get_attr: [es_server, networks, private, 0] }
