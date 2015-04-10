@@ -7,9 +7,6 @@ Chef::Log.debug "Loaded settings: #{settings.inspect}"
 #
 node.default[:elasticsearch] ||= {}
 node.normal[:elasticsearch]  ||= {}
-
-include_attribute 'elasticsearch::customize'
-
 node.normal[:elasticsearch]    = DeepMerge.merge(node.default[:elasticsearch].to_hash, node.normal[:elasticsearch].to_hash)
 node.normal[:elasticsearch]    = DeepMerge.merge(node.normal[:elasticsearch].to_hash, settings.to_hash)
 
@@ -30,10 +27,7 @@ default.elasticsearch[:node][:name]    = node.name
 # === USER & PATHS
 #
 default.elasticsearch[:dir]       = "/usr/local"
-default.elasticsearch[:bindir]    = "/usr/local/bin"
 default.elasticsearch[:user]      = "elasticsearch"
-default.elasticsearch[:uid]       = nil
-default.elasticsearch[:gid]       = nil
 
 default.elasticsearch[:path][:conf] = "/usr/local/etc/elasticsearch"
 default.elasticsearch[:path][:data] = "/usr/local/var/data/elasticsearch"
@@ -41,10 +35,6 @@ default.elasticsearch[:path][:logs] = "/usr/local/var/log/elasticsearch"
 
 default.elasticsearch[:pid_path]  = "/usr/local/var/run"
 default.elasticsearch[:pid_file]  = "#{node.elasticsearch[:pid_path]}/#{node.elasticsearch[:node][:name].to_s.gsub(/\W/, '_')}.pid"
-
-default.elasticsearch[:templates][:elasticsearch_env] = "elasticsearch-env.sh.erb"
-default.elasticsearch[:templates][:elasticsearch_yml] = "elasticsearch.yml.erb"
-default.elasticsearch[:templates][:logging_yml]       = "logging.yml.erb"
 
 # === MEMORY
 #
@@ -92,7 +82,6 @@ default.elasticsearch[:env_options] = ""
 # === OTHER SETTINGS
 #
 default.elasticsearch[:skip_restart] = false
-default.elasticsearch[:skip_start] = false
 
 # === PORT
 #
