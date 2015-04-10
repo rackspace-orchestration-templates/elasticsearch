@@ -118,7 +118,7 @@ This cookbook comes with a Rake task which allows to create, bootstrap and confi
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~bash
 time \
  AWS_SSH_KEY_ID=your-key-id \
- AWS_ACCESS_KEY_ID=your-access-keys \
+ AWS_ACCESS_KEY=your-access-keys \
  AWS_SECRET_ACCESS_KEY=your-secret-key\
  SSH_KEY=/path/to/your/key.pem \
  NAME=elasticsearch-test-chef-solo-with-rake \
@@ -261,15 +261,6 @@ END
 ssh ... "sudo chef-solo -N elasticsearch-wrapper-cookbook-test -j node.json"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For customizing the default attributes, there's a `elasticsearch::customize` recipe,
-which solves -- for the time being -- problems when over-riding the attributes.
-
-Create a `elasticsearch/attributes/customize.rb` file in your wrapper cookbook,
-and place any attribute overrides there:
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~bash
-echo "normal[:elasticsearch][:version] = '1.1.0'" > my-elasticsearch/attributes/customize.rb
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Nginx Proxy
 -----------

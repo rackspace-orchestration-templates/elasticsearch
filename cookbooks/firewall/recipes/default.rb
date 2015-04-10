@@ -17,6 +17,13 @@
 # limitations under the License.
 #
 
-package 'ufw' do
-  action :install
+firewall 'default' do
+  action :enable
+end
+
+firewall_rule 'allow world to ssh' do
+  port 22
+  source '0.0.0.0/0'
+  action [:allow]
+  only_if { node['firewall']['allow_ssh'] }
 end
