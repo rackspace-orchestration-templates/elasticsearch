@@ -9,7 +9,7 @@ parameters:
     label: Server Image
     description: Operating system to use for your server.
     type: string
-    default: Ubuntu 12.04 LTS (Precise Pangolin) (PVHVM)
+    default: Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
 
   flavor:
     description: Flavor for Cloud Servers
