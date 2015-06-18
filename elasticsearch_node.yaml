@@ -9,7 +9,7 @@ parameters:
     label: Server Image
     description: Operating system to use for your server.
     type: string
-    default: Ubuntu 12.04 LTS (Precise Pangolin) (PVHVM)
+    default: Ubuntu 14.04 LTS (Trusty Tahr) (PVHVM)
 
   flavor:
     description: Flavor for Cloud Servers
@@ -61,7 +61,7 @@ parameters:
     label: Chef Version
     description: Version of chef client to use
     type: string
-    default: 11.12.8
+    default: 12.3.0
 
 resources:
 

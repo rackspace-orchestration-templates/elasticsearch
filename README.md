@@ -66,7 +66,7 @@ the `-P` flag to specify a custom parameter.
 * `es_version`: Version of Elasticsearch to install. (Default: 1.4.4)
 * `flavor`: Rackspace Cloud Server flavor to use. The size is based on the
   amount of RAM for the provisioned server. (Default: 2 GB Performance)
-* `chef_version`: Version of chef client to use (Default: 11.12.8)
+* `chef_version`: Version of chef client to use (Default: 12.3.0)
 * `kitchen`: URL for the kitchen to use (Default:
   https://github.com/rackspace-orchestration-templates/elasticsearch)
 
