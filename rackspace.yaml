@@ -11,8 +11,9 @@ hidden_outputs:
   - private_key
   - es_password
 abstract: |
-  Multiple Linux servers running an
-  [Elasticsearch](http://www.elasticsearch.org/) cluster.
+  Elasticsearch is an open-source search engine that provides fast,
+  distributed full-text search functionality, a RESTful interface
+  and schema-free JSON documents.
 instructions: |
   #### Getting Started
   If you are new to Elasticsearch, they provide
