@@ -1,8 +1,8 @@
 heat_template_version: 2013-05-23
 
 description: |
-  This is a Heat template to deploy an elasticsearch cluster on the
-  Rackspace Cloud.
+  Multiple Linux servers running an
+  [Elasticsearch](http://www.elasticsearch.org/) cluster.
 
 parameter_groups:
 
