@@ -106,11 +106,11 @@ status() {
 
   # RUNNING
   if [[ $pid && -d "/proc/$pid" ]]; then
-    version=$(curl -s 'http://localhost:<%= node.elasticsearch[:http][:port] %>' | ruby -rubygems -e 'require "json"; print JSON.parse(STDIN.read)["version"]["number"]')
+    version=$(curl -s 'http://<%= node[:network][:interfaces][:eth2][:addresses].find {|addr, addr_info| addr_info[:family] == "inet"}.first rescue 'localhost' %>:<%= node.elasticsearch[:http][:port] %>' | ruby -rubygems -e 'require "json"; print JSON.parse(STDIN.read)["version"]["number"]')
     echo -e "\033[1;37;46melasticsearch $version running with PID $pid\033[0m"
     # VERBOSE
     if [[ $pid && $1 == '-v' || $1 == '--verbose' ]]; then
-      curl -s 'http://localhost:<%= node.elasticsearch[:http][:port] %>/_cluster/nodes/<%= node.elasticsearch[:node][:name] %>?os&process&jvm&network&transport&settings&pretty' | \
+      curl -s 'http://<%= node[:network][:interfaces][:eth2][:addresses].find {|addr, addr_info| addr_info[:family] == "inet"}.first rescue 'localhost' %>:<%= node.elasticsearch[:http][:port] %>/_cluster/nodes/<%= node.elasticsearch[:node][:name] %>?os&process&jvm&network&transport&settings&pretty' | \
       ruby -rubygems -e '
         begin
           require "json"; h = JSON.parse(STDIN.read); id, node = h["nodes"].first;
